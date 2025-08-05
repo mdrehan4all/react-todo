@@ -40,6 +40,13 @@ export default function Home(){
             )
         );
     }
+    const editId = (id) => {
+       setList(prevItems =>
+            prevItems.map(item =>
+                item.id === id ? { ...item, id: Date.now() } : item
+            )
+        );
+    }
 
     useEffect(() => {
         const ls = localStorage.getItem('list');
@@ -61,14 +68,16 @@ export default function Home(){
             <div className="container">
                 <div className="row">
                     <div className="col-md-12 mt-2">
-                        <input type="text" placeholder="Create new" className="form-control" value={title} onChange={(e)=>setTitle(e.target.value)} onKeyDown={(e)=>{if(e.key === 'Enter'){ createNew() }}}/>
+                        <input type="text" placeholder="Create new" className="form-control" value={title} onChange={(e)=>setTitle(e.target.value)} onKeyUp={(e)=>{if(e.key === 'Enter' || e.key === 'Tab'){ createNew() }}}/>
+                        <button className="btn btn-dark w-100 mt-2" onClick={()=>{createNew()}}>Create</button>
                     </div>
                     
                     {
                         list.sort((a, b) => b.id - a.id).map((item, index)=>(
                              <div className="col-md-12 mt-2 border rounded-4 p-4" key={index}>
-                                <h1><input value={item.title} onChange={(e)=>{ editTitle(item.id, e.target.value) }} style={{border: 'none'}}/></h1>
-                                <textarea className="form-control my-2" onChange={(e)=>{ editMessage(item.id, e.target.value) }}>{item.message}</textarea>
+                                <h2><input value={item.title} onChange={(e)=>{ editTitle(item.id, e.target.value) }} style={{border: 'none'}}/></h2>
+                                <textarea className="form-control my-2" onChange={(e)=>{ editMessage(item.id, e.target.value) }} value={item.message}></textarea>
+                                <button className="btn btn-sm btn-success me-2" onClick={()=>{ editId(item.id)}}>Move to Top</button>
                                 <button className="btn btn-sm btn-danger" onClick={()=>{removeItem(item.id)}}>Delete</button>
                             </div>
                         ))
